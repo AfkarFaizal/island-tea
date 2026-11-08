@@ -1,13 +1,13 @@
 # Island Tea Co. & Ceylon Coffee Club — Website
 
-A Spring Boot (Java 17) website for **Island Tea Co. & Ceylon Coffee Club — Malabe**,
+A Spring Boot (Java 21) website for **Island Tea Co. & Ceylon Coffee Club — Malabe**,
 built to explicitly demonstrate object-oriented design and core data
 structures & algorithms rather than hiding everything behind framework
 magic.
 
 ## Run it
 
-Requires Java 17+ and Maven, with access to Maven Central (this sandbox's
+Requires Java 21 and Maven, with access to Maven Central (this sandbox's
 network doesn't allow that domain, so the build couldn't be verified here —
 run it locally):
 
