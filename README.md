@@ -1,78 +1,79 @@
-# Island Tea Co. & Ceylon Coffee Club — Website
+# Island Tea Co. & Ceylon Coffee Club
 
-A Spring Boot (Java 21) website for **Island Tea Co. & Ceylon Coffee Club — Malabe**,
-built to explicitly demonstrate object-oriented design and core data
-structures & algorithms rather than hiding everything behind framework
-magic.
+A Spring Boot website for Island Tea Co. & Ceylon Coffee Club in Malabe, Sri Lanka. It includes cafe pages, a sample menu, menu search, and reviews. Menu and cafe information is currently seeded in memory; no database is required.
 
-## Run it
+## Requirements
 
-Requires Java 21 and Maven, with access to Maven Central (this sandbox's
-network doesn't allow that domain, so the build couldn't be verified here —
-run it locally):
+- Java 21
+- Apache Maven
 
-```bash
+Check that Java and Maven are available in your terminal:
+
+```powershell
+java -version
+mvn -version
+```
+
+The Java version should be 21. If `mvn` is not recognized, install Apache Maven, add its `bin` directory to `PATH`, and open a new terminal.
+
+## Run locally
+
+Open PowerShell in the repository folder, then run:
+
+```powershell
+cd .\island-tea-webapp
 mvn spring-boot:run
 ```
 
-Then open [http://localhost:8080]
-Then open  [https://island-tea-webapp-production.up.railway.app]
+When the application starts, open [http://localhost:8080](http://localhost:8080). Leave the terminal running while you use the site; press **Ctrl+C** to stop the server.
 
-## Project layout
+To build and run an executable JAR instead:
 
-```text
-com.islandtea
-├── model/            OOP domain model
-├── datastructures/   Hand-written DSA building blocks
-├── service/          Business logic (uses the DSA layer)
-└── controller/        Spring MVC controllers (Thymeleaf pages + a small REST API)
+```powershell
+cd .\island-tea-webapp
+mvn clean package
+java -jar .\target\island-tea-webapp.jar
 ```
 
-## OOP concepts, and where to find them
+On macOS or Linux, use `cd island-tea-webapp` and `java -jar target/island-tea-webapp.jar` for the equivalent commands.
 
-| Concept | Where |
-| --- | --- |
-| Abstraction (interface) | `model/Reviewable.java` — contract for anything that produces a rating + text |
-| Abstract class | `model/Person.java`, `model/Reviewer.java` |
-| Inheritance | `Person → Reviewer → LocalGuideReviewer / RegularReviewer` |
-| Polymorphism | `Reviewer.getTrustWeight()` — `ReviewService` ranks reviews without knowing the concrete subtype |
-| Encapsulation | All model fields are `private`/`final`, exposed only via getters |
-| Builder pattern | `model/Cafe.java` (`Cafe.Builder`) — immutable object, readable construction |
-| Singleton pattern (Spring-idiomatic) | `service/CafeInfoProvider.java` — one bean, one shared `Cafe` record |
-| `Comparable` for natural ordering | `Person` (by name), `MenuItem` (by price) |
+The app uses port 8080 by default. If that port is already in use, choose another port in PowerShell:
 
-## DSA concepts, and where to find them
+```powershell
+$env:PORT = "8081"
+mvn spring-boot:run
+```
 
-| Concept | Where | Why |
-| --- | --- | --- |
-| Custom singly linked list | `datastructures/CustomLinkedList.java` | Backs the review timeline in insertion order |
-| Trie (prefix tree) | `datastructures/MenuTrie.java` | Powers `/api/menu/search?prefix=` autocomplete on the menu page |
-| Merge sort (generic, from scratch) | `datastructures/SortUtils.mergeSort` | Sorts menu items by price |
-| Binary search (generic, from scratch) | `datastructures/SortUtils.binarySearch` | Exact-price lookups over the sorted menu |
-| Heap / `PriorityQueue` (top-K pattern) | `service/ReviewService.getTopReviews` | Extracts the top-N reviews by weighted score in `O(n log k)` |
-| Hash map for O(1) grouping | `service/MenuService` (`Map<MenuCategory, List<MenuItem>>`) | Category lookups without re-filtering the whole menu |
-| Stack (`ArrayDeque` as LIFO) | `service/MenuService` recently-viewed items | Most-recent-first browsing history |
+Then open [http://localhost:8081](http://localhost:8081). Clear the setting in that terminal with `Remove-Item Env:PORT` when you are done.
 
-## Pages
+## Pages and API
 
-- `/` — home, hero, signature items, top reviews
-- `/menu` — full menu grouped by category, live Trie-backed search
-- `/menu/item/{id}` — single item detail (also records a "recently viewed" stack push)
-- `/reviews` — top reviews (heap-ranked) + full chronological timeline
-- `/about` — address, contact, amenities, sourced from the Google Maps listing
+- `/` — home page with signature items and featured reviews
+- `/menu` — menu grouped by category, with prefix search
+- `/menu/item/{id}` — item details
+- `/reviews` — featured reviews and the review timeline
+- `/about` — cafe information
+- `/api/menu/search?prefix=Ceylon` — search menu items by name prefix
+- `/api/menu/sorted-by-price` — menu items ordered by price
 
-## Data source
+## Project structure
 
-Cafe details, address, phone, rating and the three featured reviews (Dil,
-Nirmani Samarakoon, Nuwan Wijesinghe) were seeded from the Google Maps
-listing you provided, in `service/CafeDataInitializer.java`. Menu items are
-illustrative Ceylon tea / coffee / breakfast placeholders — swap in the
-real menu by editing that same file (or wiring `MenuService` to a database
-later; the class is already structured so JPA repositories could replace
-the in-memory `List` without touching controllers or templates).
+```text
+island-tea-webapp/
+├── pom.xml
+└── src/main/
+    ├── java/com/islandtea/
+    │   ├── controller/       Spring MVC pages and API endpoints
+    │   ├── datastructures/   Custom linked list, trie, sorting and search
+    │   ├── model/            Cafe, menu, and review domain models
+    │   └── service/          Cafe data, menu, and review logic
+    └── resources/
+        ├── static/css/       Stylesheet
+        └── templates/        Thymeleaf pages
+```
 
-## Extending this into production
+The project demonstrates object-oriented concepts such as interfaces, inheritance, polymorphism, encapsulation, builders, and comparable models. It also uses a trie for menu prefix search, merge sort and binary search for menu prices, a priority queue for top reviews, a linked list for review ordering, and a stack for recently viewed items.
 
-- Swap in-memory seeding for a real database (Spring Data JPA + Postgres/MySQL) — the service layer already shields controllers from the storage detail.
-- Add a `staff`/`admin` role to `Person`'s hierarchy for menu management.
-- Cache the price-sorted menu list instead of re-sorting on every binary search call.
+## Data
+
+Cafe details and featured reviews are initialized in `island-tea-webapp/src/main/java/com/islandtea/service/CafeDataInitializer.java`. The sample menu is illustrative; update the same file with the cafe's current items and prices.
