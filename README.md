@@ -2,6 +2,8 @@
 
 A Spring Boot website for Island Tea Co. & Ceylon Coffee Club in Malabe, Sri Lanka. It includes cafe pages, a sample menu, menu search, and reviews. Menu and cafe information is currently seeded in memory; no database is required.
 
+**Live website:** [https://island-tea.vercel.app/](https://island-tea.vercel.app/)
+
 ## Requirements
 
 - Java 21
