@@ -74,6 +74,17 @@ island-tea-webapp/
 
 The project demonstrates object-oriented concepts such as interfaces, inheritance, polymorphism, encapsulation, builders, and comparable models. It also uses a trie for menu prefix search, merge sort and binary search for menu prices, a priority queue for top reviews, a linked list for review ordering, and a stack for recently viewed items.
 
+## Deploy on Render
+
+The repository includes a root-level `Dockerfile` that builds the Java 21 application from `island-tea-webapp/`. This lets Render build the project without a separate monorepo root-directory setting.
+
+1. Sign in to Render and connect the GitHub account that can access `AfkarFaizal/island-tea`.
+2. Select **New** → **Web Service**, then connect the `AfkarFaizal/island-tea` repository and the `main` branch.
+3. Choose the **Docker** runtime and a plan. The Dockerfile is at the repository root.
+4. Create the service and wait for the first deployment to finish. Render will provide a public `onrender.com` URL.
+
+The app reads Render's `PORT` environment variable and binds its web server to that port. No database or other environment variables are required. Render's free web services sleep after 15 minutes without requests and may take a little time to wake up.
+
 ## Data
 
 Cafe details and featured reviews are initialized in `island-tea-webapp/src/main/java/com/islandtea/service/CafeDataInitializer.java`. The sample menu is illustrative; update the same file with the cafe's current items and prices.
